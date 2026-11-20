@@ -1366,6 +1366,27 @@ body.light-theme .app-active .device-home-indicator {
   margin-top: 9px;
 }
 
+.account-report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.account-report-actions .account-inline-action {
+  margin-top: 0;
+}
+
+.account-delete-action {
+  border-color: rgba(251, 113, 133, 0.3);
+  background: rgba(190, 24, 93, 0.12);
+  color: #fda4af;
+}
+
+.audit-report-item .account-delete-action {
+  flex: 0 0 auto;
+}
+
 .account-check-row {
   display: flex;
   align-items: center;
@@ -4074,6 +4095,12 @@ body.light-theme .account-inline-action {
   border-color: #7dd3fc;
   background: #e0f2fe;
   color: #075985;
+}
+
+body.light-theme .account-delete-action {
+  border-color: #fda4af;
+  background: #fff1f2;
+  color: #be123c;
 }
 
 body.light-theme .account-check-row small,
