@@ -961,7 +961,16 @@ function renderAccountReportHistory() {
       closeAccountCenter();
       switchTab('scan');
     });
-    card.append(heading, details, date, openAudit);
+    const actions = document.createElement('div');
+    actions.className = 'account-report-actions';
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'account-inline-action account-delete-action';
+    deleteButton.textContent = 'Hapus';
+    deleteButton.setAttribute('aria-label', `Hapus laporan ${report.facilityName || 'fasilitas tanpa nama'}`);
+    deleteButton.addEventListener('click', () => deleteAuditReport(report.id));
+    actions.append(openAudit, deleteButton);
+    card.append(heading, details, date, actions);
     list.appendChild(card);
   });
 }
@@ -1693,8 +1702,66 @@ function renderAuditReports() {
     date.textContent = Number.isNaN(createdAt.getTime()) ? 'Tanggal tidak diketahui' : createdAt.toLocaleString('id-ID');
     details.append(title, metadata, status, date);
     card.appendChild(details);
+    const deleteButton = document.createElement('button');
+    deleteButton.type = 'button';
+    deleteButton.className = 'account-inline-action account-delete-action';
+    deleteButton.textContent = 'Hapus';
+    deleteButton.setAttribute('aria-label', `Hapus laporan ${report.facilityName || 'fasilitas tanpa nama'}`);
+    deleteButton.addEventListener('click', () => deleteAuditReport(report.id));
+    card.appendChild(deleteButton);
     list.appendChild(card);
   });
+}
+
+function deleteAuditReport(reportId) {
+  const reports = readAuditReports();
+  if (!reports) return;
+  const report = reports.find(item => item && item.id === reportId);
+  if (!report) {
+    showToast('Laporan tidak ditemukan di penyimpanan perangkat.');
+    return;
+  }
+  if (!window.confirm(`Hapus laporan "${report.facilityName || 'Fasilitas tanpa nama'}" dari perangkat ini?`)) return;
+
+  try {
+    localStorage.setItem(AUDIT_REPORTS_KEY, JSON.stringify(reports.filter(item => item !== report)));
+  } catch (error) {
+    showToast(error.name === 'QuotaExceededError'
+      ? 'Penyimpanan perangkat penuh; laporan belum dihapus.'
+      : 'Laporan gagal dihapus dari perangkat ini.');
+    return;
+  }
+
+  let gamificationSaved = true;
+  if (report.verificationStatus === 'valid' && typeof report.id === 'string') {
+    const ownerId = getReportOwnerId(report);
+    const gamification = readGamificationState(ownerId);
+    if (gamification) {
+      if (gamification.awardedReportIds.includes(report.id)) {
+        const awardId = `report-${report.id}`;
+        const award = gamification.history.find(item => item && item.id === awardId);
+        gamification.points = Math.max(0, gamification.points - (award ? award.points : POINTS_PER_VALID_REPORT));
+        gamification.awardedReportIds = gamification.awardedReportIds.filter(id => id !== report.id);
+        gamification.history = gamification.history.filter(item => !item || item.id !== awardId);
+        gamificationSaved = saveGamificationState(ownerId, gamification);
+      }
+    } else {
+      gamificationSaved = false;
+    }
+  }
+
+  renderAuditReports();
+  renderGamification();
+  renderProfileTab();
+  renderGovernmentDashboard();
+  if (!document.getElementById('account-center').classList.contains('hidden')) {
+    renderAccountReportHistory();
+    renderAccountNotifications();
+  }
+  updateAccountNotificationBadge();
+  showToast(gamificationSaved
+    ? 'Laporan berhasil dihapus.'
+    : 'Laporan berhasil dihapus, tetapi poin Aksi Muda gagal diperbarui.');
 }
 
 function submitAuditReport(event) {
