@@ -1003,6 +1003,37 @@ body.light-theme .app-active .device-home-indicator {
   text-align: center;
 }
 
+.login-demo-bappeda {
+  display: block;
+  width: 100%;
+  min-height: 42px;
+  margin-top: 16px;
+  padding: 8px 16px;
+  border: 1px solid rgba(5, 150, 105, 0.35);
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.1);
+  color: #047857;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.login-demo-bappeda:hover {
+  border-color: rgba(5, 150, 105, 0.65);
+  background: rgba(16, 185, 129, 0.18);
+}
+
+.login-demo-bappeda:active {
+  transform: scale(0.985);
+}
+
+.login-demo-bappeda:focus-visible {
+  outline: 2px solid #059669;
+  outline-offset: 3px;
+}
+
 .account-register-role {
   display: grid;
   gap: 6px;
