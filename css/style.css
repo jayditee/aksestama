@@ -5647,3 +5647,37 @@ body.high-contrast #tab-gov .gov-map-panel .gov-map-legend span,
 body.high-contrast #tab-gov .gov-map-panel .gov-priority-chip {
   color: var(--map-navy) !important;
 }
+
+@media (max-width: 768px) {
+  body {
+    display: block;
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  #app-shell.mobile-shell {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  #app-shell::before,
+  #app-shell .device-notch,
+  #app-shell .device-home-indicator,
+  #app-shell .device-status,
+  #app-shell .device-status-spacer {
+    display: none;
+  }
+
+  #app-shell .device-screen {
+    border-radius: 0;
+  }
+}
