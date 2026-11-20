@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#070B14" />
+  <title>AKSESTAMA — Akses Setara, Kota Inklusif</title>
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS CDN & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="text-slate-100 antialiased selection:bg-emerald-500 selection:text-slate-950">
+
+  <!-- =========================================================
+       MOBILE VIEWPORT SHELL (Pas di HP & Terpusat di Desktop)
+  ========================================================== -->
+  <main id="app-shell" class="mobile-shell relative bg-[#070B14] overflow-hidden flex flex-col">
+    <div class="device-notch" aria-hidden="true"></div>
+    <div class="device-home-indicator" aria-hidden="true"></div>
+    <div id="device-status" class="device-status" aria-hidden="true">
+      <span>9:41</span>
+      <div class="device-status-icons">
+        <i data-lucide="signal"></i>
+        <i data-lucide="wifi"></i>
+        <i data-lucide="battery-full"></i>
+      </div>
+    </div>
+    <div class="device-status-spacer" aria-hidden="true"></div>
+
+    <button id="splash-screen" type="button" onclick="enterOnboardingScreen()" aria-label="Lanjutkan ke pengenalan aplikasi"
+      class="device-screen splash-screen absolute inset-0 z-[60] flex flex-col focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500">
+      <div class="splash-brand">
+        <img src="assets/assetslogo.png.png" alt="Logo AKSESTAMA" class="splash-logo" />
+        <div class="splash-tagline" aria-label="Akses Setara, Kota Inklusif">
+          <span></span>
+          <p>Akses Setara, Kota Inklusif</p>
+          <span></span>
+        </div>
+      </div>
+
+      <div class="splash-city" aria-hidden="true">
+        <span class="splash-building"></span><span class="splash-building"></span>
+        <span class="splash-building"></span><span class="splash-building"></span>
+        <span class="splash-building"></span><span class="splash-building"></span>
+        <span class="splash-building"></span><span class="splash-building"></span>
+        <span class="splash-building"></span><span class="splash-building"></span>
+        <span class="splash-building"></span><span class="splash-building"></span>
+      </div>
+      <div class="splash-orange-wave" aria-hidden="true"></div>
+      <div class="splash-blue-wave" aria-hidden="true"></div>
+    </button>
+
+    <section id="onboarding-screen" class="device-screen onboarding-screen hidden absolute inset-0 z-[60]" aria-label="Pengenalan AKSESTAMA">
+      <img id="onboarding-image" src="assets/onboarding-slide-2-polished.png" alt="Kota yang inklusif dibangun dari langkah kecil yang digerakkan bersama." class="onboarding-image" />
+      <button type="button" class="onboarding-skip" onclick="enterLoginScreen()" aria-label="Lewati pengenalan"></button>
+      <button id="onboarding-next" type="button" class="onboarding-next" onclick="nextOnboardingSlide()" aria-label="Selanjutnya, ke halaman Peta Akses"></button>
+    </section>
+    
+    <!-- VIEW 1: PURE LOGIN -->
+    <section id="view-login" class="device-screen login-screen hidden absolute inset-0 overflow-y-auto no-scrollbar z-20">
+      <div class="login-skyline" aria-hidden="true">
+        <span class="login-building"></span><span class="login-building"></span>
+        <span class="login-building"></span><span class="login-building"></span>
+        <span class="login-building"></span><span class="login-building"></span>
+        <span class="login-building"></span><span class="login-building"></span>
+        <span class="login-building"></span><span class="login-building"></span>
+      </div>
+      <div class="login-bottom-waves" aria-hidden="true"></div>
+
+      <div id="login-screen-content" class="login-content">
+        <div class="login-brand">
+          <img src="assets/assetslogo.png.png" alt="AKSESTAMA" class="login-logo" />
+          <p class="login-tagline">Akses Setara, Kota Inklusif</p>
+        </div>
+
+        <div class="login-intro">
+          <h2>Masuk ke akun Anda</h2>
+          <p>Masuk dengan akun terdaftar atau lanjutkan sebagai demo.</p>
+        </div>
+
+        <form id="login-form" onsubmit="handleLogin(event)" class="login-form" aria-label="Form login AKSESTAMA">
+          <div class="login-control">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            <label class="sr-only" for="login-email">Email</label>
+            <input id="login-email" type="email" inputmode="email" autocomplete="username" required placeholder="Email"
+              class="login-input" />
+          </div>
+          <div class="login-control">
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <label class="sr-only" for="login-password">Kata Sandi</label>
+            <input id="login-password" type="password" autocomplete="current-password" required placeholder="Kata Sandi"
+              class="login-input login-password-input" />
+            <button id="toggle-login-password" class="login-password-toggle" type="button" aria-label="Tampilkan kata sandi" onclick="togglePasswordVisibility()">
+              <i data-lucide="eye-off" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div class="login-forgot-row">
+            <button type="button" class="login-link" onclick="showToast('Fitur lupa kata sandi belum tersedia.')">Lupa kata sandi?</button>
+          </div>
+          <button type="submit" class="login-submit"><span>Masuk</span></button>
+        </form>
+
+        <div class="login-divider" aria-hidden="true"><span>atau masuk dengan</span></div>
+
+        <div class="login-social">
+          <button type="button" class="login-social-button" onclick="showToast('Masuk dengan Google belum tersedia.')">
+            <span class="login-google-mark" aria-hidden="true">G</span>
+            <span>Masuk dengan Google</span>
+          </button>
+          <button type="button" class="login-social-button" onclick="showToast('Masuk dengan Apple belum tersedia.')">
+            <i data-lucide="apple" aria-hidden="true"></i>
+            <span>Masuk dengan Apple</span>
+          </button>
+        </div>
+
+        <p class="login-register">Belum punya akun? <button type="button" class="login-link" onclick="showRegistrationScreen()">Daftar</button></p>
+      </div>
+
+      <div id="register-screen-content" class="login-content hidden">
+        <div class="login-brand">
+          <img src="assets/assetslogo.png.png" alt="AKSESTAMA" class="login-logo" />
+          <p class="login-tagline">Akses Setara, Kota Inklusif</p>
+        </div>
+        <div class="login-intro">
+          <h2>Buat akun AKSESTAMA</h2>
+          <p>Daftar untuk menyimpan profil dan kontribusimu di perangkat ini.</p>
+        </div>
+        <form id="register-form" onsubmit="handleRegistration(event)" class="login-form" aria-label="Form registrasi AKSESTAMA">
+          <div class="login-control">
+            <i data-lucide="user-round" aria-hidden="true"></i>
+            <label class="sr-only" for="register-name">Nama lengkap</label>
+            <input id="register-name" class="login-input" type="text" autocomplete="name" maxlength="80" required placeholder="Nama lengkap" />
+          </div>
+          <div class="login-control">
+            <i data-lucide="mail" aria-hidden="true"></i>
+            <label class="sr-only" for="register-email">Email</label>
+            <input id="register-email" class="login-input" type="email" autocomplete="email" maxlength="120" required placeholder="Email" />
+          </div>
+          <label class="account-register-role">
+            <span>Peran demo</span>
+            <select id="register-role" required>
+              <option value="youth">Patroli Pemuda</option>
+              <option value="disability">Auditor Inklusi+</option>
+              <option value="bappeda">Bappeda & PUPR</option>
+            </select>
+          </label>
+          <div class="login-control">
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <label class="sr-only" for="register-password">Kata sandi</label>
+            <input id="register-password" class="login-input" type="password" autocomplete="new-password" minlength="8" required placeholder="Kata sandi (min. 8 karakter)" />
+          </div>
+          <div class="login-control">
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <label class="sr-only" for="register-password-confirm">Ulangi kata sandi</label>
+            <input id="register-password-confirm" class="login-input" type="password" autocomplete="new-password" minlength="8" required placeholder="Ulangi kata sandi" />
+          </div>
+          <button type="submit" class="login-submit"><span>Buat akun lokal</span></button>
+        </form>
+        <p class="account-local-note">Akun disimpan di browser ini. Peran dan validasi akses hanya simulasi; jangan gunakan kata sandi penting.</p>
+        <p class="login-register">Sudah punya akun? <button type="button" class="login-link" onclick="showLoginScreen()">Masuk</button></p>
+      </div>
+    </section>
+
+    <!-- =========================================================
+         VIEW 2: MAIN APPLICATION WORKSPACE (TABS)
+    ========================================================== -->
+    <div id="view-main" class="device-screen hidden flex-1 flex flex-col overflow-hidden relative z-20">
+      
+      <!-- Top App Bar -->
+      <header class="dashboard-app-header px-5 pt-3 pb-2.5 flex items-center justify-between z-30">
+        <button id="btn-account-center" type="button" onclick="openAccountCenter()" aria-label="Buka pusat akun dan notifikasi" title="Pusat akun"
+          class="account-profile-trigger flex items-center gap-2.5 min-w-0 text-left">
+          <span class="account-avatar-wrap">
+            <span id="header-avatar" class="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-slate-950 font-extrabold text-sm shadow">YP</span>
+            <span id="account-unread-badge" class="account-unread-badge hidden" aria-label="Notifikasi belum dibaca"></span>
+          </span>
+          <div class="dashboard-profile-copy min-w-0">
+            <div class="dashboard-profile-role-line flex items-center gap-1.5">
+              <span id="header-role-badge" class="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">Patroli Pemuda</span>
+              <span class="header-city text-[10px] text-slate-400">• Surabaya</span>
+            </div>
+            <h2 id="header-user-name" class="text-xs font-bold text-white mt-0.5">Zidni Raditya</h2>
+            <p id="header-user-affiliation" class="text-[10px] text-slate-400">Universitas Negeri Surabaya</p>
+          </div>
+        </button>
+
+        <div class="dashboard-header-actions flex items-center gap-1.5">
+          <button onclick="toggleVoiceAssist()" id="btn-voice" title="Perintah Suara Inklusif"
+            class="w-8 h-8 rounded-xl glass-card flex items-center justify-center text-cyan-300 hover:bg-cyan-500/20 transition">
+            <i data-lucide="mic" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleTheme()" id="btn-theme" type="button" aria-label="Aktifkan mode terang" aria-pressed="false" title="Aktifkan mode terang"
+            class="w-8 h-8 rounded-xl glass-card flex items-center justify-center text-amber-300 hover:bg-amber-500/20 transition">
+            <i data-lucide="sun" class="w-4 h-4"></i>
+          </button>
+          <button onclick="toggleHighContrast()" title="Mode Kontras Tinggi" aria-label="Mode Kontras Tinggi"
+            class="w-8 h-8 rounded-xl glass-card flex items-center justify-center text-amber-300 hover:bg-amber-500/20 transition">
+            <i data-lucide="contrast" class="w-4 h-4"></i>
+          </button>
+          <div id="screen-capture-tools" class="screen-capture-tools">
+            <button type="button" id="btn-screen-capture" onclick="toggleScreenCaptureMenu()" title="Simpan atau salin tampilan"
+              aria-label="Simpan atau salin tampilan aplikasi" aria-controls="screen-capture-menu" aria-expanded="false"
+              class="w-8 h-8 rounded-xl glass-card flex items-center justify-center text-emerald-300 hover:bg-emerald-500/20 transition">
+              <i data-lucide="camera" class="w-4 h-4" aria-hidden="true"></i>
+            </button>
+            <div id="screen-capture-menu" class="screen-capture-menu hidden" role="group" aria-label="Aksi gambar tampilan aplikasi">
+              <button type="button" onclick="downloadAppScreenshot()">
+                <i data-lucide="download" class="w-4 h-4" aria-hidden="true"></i>
+                <span>Simpan sebagai PNG</span>
+              </button>
+              <button type="button" onclick="copyAppScreenshot()">
+                <i data-lucide="copy" class="w-4 h-4" aria-hidden="true"></i>
+                <span>Salin gambar</span>
+              </button>
+            </div>
+          </div>
+          <button onclick="logoutToLogin()" title="Keluar"
+            class="w-8 h-8 rounded-xl glass-card flex items-center justify-center text-rose-300 hover:bg-rose-500/20 transition">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Scrollable Tab Content Area -->
+      <div id="main-tab-content" class="flex-1 overflow-y-auto no-scrollbar pb-24 px-5 pt-4 space-y-4">
+
+        <!-- =====================================================
+             TAB 1: BERANDA (NEO-CIVIC SPATIAL RADAR DASHBOARD)
+        ====================================================== -->
+        <div id="tab-home" class="tab-panel dashboard-home space-y-4">
+          <div class="dashboard-page-heading">
+            <div>
+              <span class="dashboard-eyebrow">DASHBOARD UTAMA</span>
+              <h1>Ringkasan akses kota</h1>
+              <p>Pantau kondisi aksesibilitas Surabaya</p>
+            </div>
+            <span class="dashboard-overview-chip"><i data-lucide="map-pin" aria-hidden="true"></i>Surabaya</span>
+          </div>
+
+          <section class="dashboard-score-card" aria-labelledby="dashboard-score-title">
+            <div class="dashboard-score-main">
+              <div class="dashboard-score-primary">
+                <p id="dashboard-score-title" class="dashboard-score-label">
+                  <i data-lucide="activity" aria-hidden="true"></i>
+                  Indeks Aksesibilitas Kota
+                </p>
+                <div class="dashboard-score-value">
+                  <span class="dashboard-score-number">78.4</span>
+                  <span class="dashboard-score-status">Baik</span>
+                </div>
+                <p class="dashboard-score-context">Koridor Ketintang – Wonokromo terpantau aktif</p>
+                <span class="dashboard-score-trend"><i data-lucide="trending-up" aria-hidden="true"></i>+6.2% bulan ini</span>
+              </div>
+
+              <div class="dashboard-score-metrics" aria-label="Ringkasan anggaran dan prioritas">
+                <div class="dashboard-score-metric">
+                  <span>APBD terkunci</span>
+                  <strong>Rp 4,82 M</strong>
+                </div>
+                <div class="dashboard-score-metric">
+                  <span>Titik prioritas</span>
+                  <strong>14</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="dashboard-compliance">
+              <div class="dashboard-compliance-heading">
+                <span>Kepatuhan Permen PUPR No. 14/2017</span>
+                <strong>142 / 181 titik</strong>
+              </div>
+              <div class="dashboard-progress-track" role="progressbar" aria-label="Kepatuhan titik aksesibilitas" aria-valuemin="0" aria-valuemax="100" aria-valuenow="78">
+                <span></span>
+              </div>
+            </div>
+          </section>
+
+          <section class="dashboard-map-card" aria-labelledby="dashboard-map-title">
+            <div class="dashboard-section-heading">
+              <div>
+                <h2 id="dashboard-map-title"><i data-lucide="map" aria-hidden="true"></i>Peta Sebaran Defisit Akses</h2>
+                <p>Peta skematis · ADS · Ketuk penanda untuk melihat detail</p>
+              </div>
+              <span class="dashboard-critical-count"><i aria-hidden="true"></i>3 Kritis</span>
+            </div>
+
+            <div class="dashboard-map" role="group" aria-label="Peta skematis sebaran akses di koridor Ketintang dan Wonokromo">
+              <svg class="dashboard-map-art" viewBox="0 0 300 160" preserveAspectRatio="none" aria-hidden="true">
+                <rect class="dashboard-map-ground" width="300" height="160" />
+                <path class="dashboard-map-park" d="M8 9h43v27H8zM231 112h59v39h-59zM183 9h25v18h-25z" />
+                <g class="dashboard-map-blocks">
+                  <path d="M9 45h39v23H9zM54 9h46v25H54zM61 45h34v23H61zM106 8h32v24h-32zM147 8h29v21h-29z"/>
+                  <path d="M9 82h39v29H9zM57 83h40v28H57zM108 101h31v22h-31zM147 111h27v31h-27z"/>
+                  <path d="M209 34h35v29h-35zM255 32h34v33h-34zM251 81h38v24h-38zM191 128h30v24h-30z"/>
+                  <path d="M20 126h34v25H20zM65 124h35v27H65zM108 132h27v19h-27z"/>
+                </g>
+                <g class="dashboard-map-buildings">
+                  <rect x="12" y="49" width="14" height="7" rx="1"/>
+                  <rect x="30" y="49" width="14" height="7" rx="1"/>
+                  <rect x="13" y="59" width="12" height="6" rx="1"/>
+                  <rect x="30" y="59" width="14" height="6" rx="1"/>
+                  <rect x="58" y="13" width="16" height="7" rx="1"/>
+                  <rect x="79" y="13" width="17" height="7" rx="1"/>
+                  <rect x="59" y="24" width="14" height="7" rx="1"/>
+                  <rect x="79" y="24" width="17" height="7" rx="1"/>
+                  <rect x="65" y="49" width="12" height="6" rx="1"/>
+                  <rect x="81" y="49" width="10" height="6" rx="1"/>
+                  <rect x="65" y="59" width="24" height="6" rx="1"/>
+                  <rect x="109" y="12" width="12" height="7" rx="1"/>
+                  <rect x="125" y="12" width="9" height="7" rx="1"/>
+                  <rect x="109" y="23" width="24" height="6" rx="1"/>
+                  <rect x="150" y="12" width="10" height="6" rx="1"/>
+                  <rect x="164" y="12" width="8" height="6" rx="1"/>
+                  <rect x="150" y="21" width="22" height="5" rx="1"/>
+                  <rect x="12" y="88" width="15" height="8" rx="1"/>
+                  <rect x="32" y="88" width="12" height="8" rx="1"/>
+                  <rect x="12" y="101" width="31" height="6" rx="1"/>
+                  <rect x="61" y="88" width="14" height="8" rx="1"/>
+                  <rect x="80" y="88" width="13" height="8" rx="1"/>
+                  <rect x="61" y="101" width="31" height="6" rx="1"/>
+                  <rect x="212" y="39" width="13" height="8" rx="1"/>
+                  <rect x="230" y="39" width="10" height="8" rx="1"/>
+                  <rect x="212" y="51" width="27" height="8" rx="1"/>
+                  <rect x="258" y="37" width="12" height="10" rx="1"/>
+                  <rect x="275" y="37" width="10" height="10" rx="1"/>
+                  <rect x="258" y="52" width="27" height="8" rx="1"/>
+                  <rect x="14" y="131" width="12" height="7" rx="1"/>
+                  <rect x="31" y="131" width="18" height="7" rx="1"/>
+                  <rect x="14" y="142" width="33" height="6" rx="1"/>
+                  <rect x="69" y="129" width="14" height="8" rx="1"/>
+                  <rect x="88" y="129" width="9" height="8" rx="1"/>
+                  <rect x="69" y="141" width="27" height="6" rx="1"/>
+                </g>
+                <g class="dashboard-map-roads">
+                  <path class="dashboard-map-road-edge" d="M-12 73C45 70 70 77 112 78S196 71 312 77"/>
+                  <path class="dashboard-map-road" d="M-12 73C45 70 70 77 112 78S196 71 312 77"/>
+                  <path class="dashboard-map-road-edge" d="M-10 118C40 105 85 105 125 86S222 46 310 23"/>
+                  <path class="dashboard-map-road" d="M-10 118C40 105 85 105 125 86S222 46 310 23"/>
+                  <path class="dashboard-map-road-edge" d="M105 -10C104 35 118 63 146 82S174 123 180 170"/>
+                  <path class="dashboard-map-road" d="M105 -10C104 35 118 63 146 82S174 123 180 170"/>
+                  <path class="dashboard-map-road-edge" d="M218 -10C217 28 230 55 252 78S273 120 278 170"/>
+                  <path class="dashboard-map-road" d="M218 -10C217 28 230 55 252 78S273 120 278 170"/>
+                  <path class="dashboard-map-road-center" d="M-10 118C40 105 85 105 125 86S222 46 310 23"/>
+                </g>
+                <text class="dashboard-map-label" x="55" y="58">KETINTANG</text>
+                <text class="dashboard-map-label" x="213" y="96">WONOKROMO</text>
+              </svg>
+
+              <button type="button" onclick="selectHotspot(0)" class="dashboard-map-pin dashboard-map-pin-critical" aria-label="ADS 92, defisit kritis">
+                <span>ADS 92</span><i aria-hidden="true"></i>
+              </button>
+              <button type="button" onclick="selectHotspot(1)" class="dashboard-map-pin dashboard-map-pin-warning" aria-label="ADS 76, perlu perhatian">
+                <span>ADS 76</span><i aria-hidden="true"></i>
+              </button>
+              <button type="button" onclick="selectHotspot(2)" class="dashboard-map-pin dashboard-map-pin-good" aria-label="ADS 18, kondisi baik">
+                <span>ADS 18</span><i aria-hidden="true"></i>
+              </button>
+            </div>
+
+            <div class="dashboard-map-legend" aria-label="Legenda tingkat defisit akses">
+              <span><i class="critical" aria-hidden="true"></i>Kritis</span>
+              <span><i class="warning" aria-hidden="true"></i>Perlu perhatian</span>
+              <span><i class="good" aria-hidden="true"></i>Baik</span>
+            </div>
+
+            <div id="hotspot-detail" class="dashboard-location-card" aria-live="polite">
+              <span class="dashboard-location-icon"><i data-lucide="map-pin" aria-hidden="true"></i></span>
+              <div class="dashboard-location-copy">
+                <span class="dashboard-location-eyebrow">Lokasi dan temuan terpilih</span>
+                <span id="hs-title" class="dashboard-location-title">Halte Ketintang Barat (Ramp 14.2°)</span>
+                <span id="hs-sub" class="dashboard-location-detail">Melanggar batas maks 7° Permen PUPR • Tiket #EMUS-8841</span>
+              </div>
+              <button type="button" onclick="switchTab('scan')" class="dashboard-audit-button">
+                <i data-lucide="scan-line" aria-hidden="true"></i>
+                Audit AI
+              </button>
+            </div>
+          </section>
+
+          <section class="dashboard-quick-actions" aria-label="Aksi cepat">
+            <button type="button" onclick="switchTab('scan')" class="dashboard-action-card dashboard-action-audit">
+              <span class="dashboard-action-icon"><i data-lucide="scan-line" aria-hidden="true"></i></span>
+              <span class="dashboard-action-copy">
+                <strong>AI Audit Kamera</strong>
+                <small>Ukur sudut &amp; lebar otomatis</small>
+              </span>
+              <i data-lucide="arrow-up-right" class="dashboard-action-arrow" aria-hidden="true"></i>
+            </button>
+            <button type="button" onclick="switchTab('inklusi')" class="dashboard-action-card dashboard-action-route">
+              <span class="dashboard-action-icon"><i data-lucide="navigation" aria-hidden="true"></i></span>
+              <span class="dashboard-action-copy">
+                <strong>Rute Inklusi+</strong>
+                <small>Navigasi bebas hambatan</small>
+              </span>
+              <i data-lucide="arrow-up-right" class="dashboard-action-arrow" aria-hidden="true"></i>
+            </button>
+          </section>
+        </div>
+
+        <!-- =====================================================
+             TAB: PETA AKSESIBILITAS
+        ====================================================== -->
+        <div id="tab-map" class="tab-panel hidden space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Peta Akses</h3>
+              <p class="text-[10px] text-slate-400 mt-1">Fasilitas publik dan rekomendasi rute inklusif</p>
+            </div>
+            <span class="text-[9px] font-mono px-2 py-1 rounded-full bg-amber-500/15 text-amber-200 border border-amber-400/25 shrink-0">DATA DEMO</span>
+          </div>
+
+          <div class="map-filter-row" role="group" aria-label="Filter kondisi fasilitas">
+            <button type="button" class="map-filter-btn active" data-map-filter="all" onclick="filterAccessibleMap('all')" aria-pressed="true">Semua</button>
+            <button type="button" class="map-filter-btn" data-map-filter="accessible" onclick="filterAccessibleMap('accessible')" aria-pressed="false">Ramah akses</button>
+            <button type="button" class="map-filter-btn" data-map-filter="attention" onclick="filterAccessibleMap('attention')" aria-pressed="false">Perlu perhatian</button>
+          </div>
+
+          <section class="map-card rounded-3xl glass-card p-3 border border-white/10" aria-labelledby="access-map-title">
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <div>
+                <h4 id="access-map-title" class="text-xs font-extrabold text-white">Koridor Ketintang – Wonokromo</h4>
+                <p class="text-[9px] text-slate-400 mt-0.5">Peta skematis · mode medan hanya ilustrasi</p>
+              </div>
+              <span id="map-point-count" class="text-[9px] text-cyan-300 font-bold">4 titik ditampilkan</span>
+            </div>
+
+            <div class="map-filter-row map-mode-row mb-2" role="group" aria-label="Mode tampilan peta">
+              <button type="button" class="map-filter-btn active" data-map-mode="standard" onclick="setAccessibleMapMode('standard')" aria-pressed="true">Standar</button>
+              <button type="button" class="map-filter-btn" data-map-mode="terrain" onclick="setAccessibleMapMode('terrain')" aria-pressed="false">Medan</button>
+            </div>
+
+            <div id="access-map" class="access-map" role="region" aria-label="Peta skematis. Pilih penanda fasilitas untuk melihat detail.">
+              <svg class="access-map-art" viewBox="0 0 360 260" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <g id="map-tree-icon">
+                    <ellipse class="map-tree-shadow" cx="0" cy="6" rx="8" ry="3.5" fill="#CFE4D3" />
+                    <circle class="map-tree-canopy-dark" cx="-3" cy="-3" r="5" fill="#5D8A62" stroke="#4E7656" stroke-width="0.7" />
+                    <circle class="map-tree-canopy" cx="3" cy="-3" r="5.5" fill="#6C956E" stroke="#5D8A62" stroke-width="0.8" />
+                    <circle class="map-tree-canopy-dark" cx="0" cy="-7" r="5" fill="#5D8A62" stroke="#4E7656" stroke-width="0.7" />
+                    <circle class="map-tree-highlight" cx="-2" cy="-7" r="2.2" fill="#A2C39A" />
+                  </g>
+                  <symbol id="map-building-concrete" viewBox="0 0 30 20">
+                    <rect class="map-building-shadow" x="1" y="2" width="28" height="17" rx="1.5" />
+                    <rect class="map-building-stone-roof" x="0" y="0" width="28" height="17" rx="1.5" />
+                    <path class="map-building-stone-detail" d="M3 4h22M3 13h22" />
+                    <rect class="map-building-skylight" x="12" y="6" width="6" height="4" rx="0.5" />
+                  </symbol>
+                  <symbol id="map-building-tile" viewBox="0 0 30 20">
+                    <rect class="map-building-shadow" x="1" y="2" width="28" height="17" rx="1.5" />
+                    <rect class="map-building-tile-roof" x="0" y="0" width="28" height="17" rx="1.5" />
+                    <path class="map-building-tile-detail" d="M3 4h22M3 8h22M3 12h22" />
+                    <rect class="map-building-skylight" x="12" y="6" width="6" height="4" rx="0.5" />
+                  </symbol>
+                </defs>
+                <g class="map-terrain-features">
+                  <path class="map-park" d="M194 20h43v48h-43zM70 103h42v47H70zM99 204h29v33H99z" />
+                  <use href="#map-tree-icon" x="199" y="29" />
+                  <use href="#map-tree-icon" x="217" y="29" />
+                  <use href="#map-tree-icon" x="233" y="34" />
+                  <use href="#map-tree-icon" x="205" y="34" />
+                  <use href="#map-tree-icon" x="225" y="47" />
+                  <use href="#map-tree-icon" x="207" y="54" />
+                  <use href="#map-tree-icon" x="228" y="60" />
+                  <use href="#map-tree-icon" x="80" y="117" />
+                  <use href="#map-tree-icon" x="98" y="110" />
+                  <use href="#map-tree-icon" x="108" y="122" />
+                  <use href="#map-tree-icon" x="78" y="138" />
+                  <use href="#map-tree-icon" x="101" y="135" />
+                  <use href="#map-tree-icon" x="106" y="143" />
+                  <use href="#map-tree-icon" x="103" y="210" />
+                  <use href="#map-tree-icon" x="108" y="216" />
+                  <use href="#map-tree-icon" x="122" y="214" />
+                  <use href="#map-tree-icon" x="103" y="230" />
+                  <use href="#map-tree-icon" x="120" y="229" />
+                </g>
+                <path class="map-block" d="M15 20h70v48H15zM112 18h77v43h-77zM245 20h90v54h-90zM15 92h50v60H15zM125 86h60v54h-60zM270 100h66v53h-66zM16 176h80v62H16zM128 190h69v48h-69zM244 182h91v56h-91z"/>
+                <g class="map-city-buildings">
+                  <use href="#map-building-concrete" x="19" y="24" width="24" height="17" />
+                  <use href="#map-building-tile" x="48" y="23" width="32" height="19" />
+                  <use href="#map-building-tile" x="19" y="46" width="27" height="17" />
+                  <use href="#map-building-concrete" x="51" y="47" width="29" height="16" />
+                  <use href="#map-building-concrete" x="117" y="22" width="24" height="17" />
+                  <use href="#map-building-tile" x="146" y="21" width="38" height="18" />
+                  <use href="#map-building-tile" x="117" y="43" width="31" height="15" />
+                  <use href="#map-building-concrete" x="153" y="42" width="31" height="15" />
+                  <use href="#map-building-tile" x="250" y="23" width="33" height="18" />
+                  <use href="#map-building-concrete" x="289" y="22" width="40" height="20" />
+                  <use href="#map-building-concrete" x="250" y="48" width="26" height="20" />
+                  <use href="#map-building-tile" x="282" y="49" width="47" height="19" />
+                  <use href="#map-building-concrete" x="19" y="99" width="19" height="20" />
+                  <use href="#map-building-tile" x="42" y="98" width="19" height="20" />
+                  <use href="#map-building-tile" x="19" y="125" width="39" height="21" />
+                  <use href="#map-building-tile" x="145" y="99" width="34" height="16" />
+                  <use href="#map-building-concrete" x="147" y="119" width="32" height="16" />
+                  <use href="#map-building-tile" x="278" y="121" width="24" height="25" />
+                  <use href="#map-building-concrete" x="307" y="121" width="23" height="25" />
+                  <use href="#map-building-tile" x="18" y="216" width="31" height="17" />
+                  <use href="#map-building-concrete" x="55" y="210" width="34" height="21" />
+                  <use href="#map-building-concrete" x="134" y="202" width="25" height="17" />
+                  <use href="#map-building-tile" x="164" y="211" width="24" height="18" />
+                  <use href="#map-building-tile" x="249" y="207" width="24" height="23" />
+                  <use href="#map-building-concrete" x="307" y="188" width="22" height="23" />
+                  <use href="#map-building-tile" x="310" y="216" width="20" height="16" />
+                </g>
+                <g class="map-road-edges">
+                  <path d="M-10 210C68 178 113 198 174 158S278 87 370 72"/>
+                  <path d="M86 -10C95 62 128 115 159 158S205 220 216 270"/>
+                  <path d="M230 -10C238 48 248 105 265 153S293 220 301 270"/>
+                  <path d="M-10 78C80 94 151 75 225 96S309 123 370 115"/>
+                </g>
+                <path class="map-road map-road-main" d="M-10 210C68 178 113 198 174 158S278 87 370 72"/>
+                <path class="map-road" d="M86 -10C95 62 128 115 159 158S205 220 216 270"/>
+                <path class="map-road" d="M230 -10C238 48 248 105 265 153S293 220 301 270"/>
+                <path class="map-road" d="M-10 78C80 94 151 75 225 96S309 123 370 115"/>
+                <path class="map-road-centerline" d="M-10 210C68 178 113 198 174 158S278 87 370 72"/>
+                <path class="map-road-centerline" d="M-10 78C80 94 151 75 225 96S309 123 370 115"/>
+                <path class="map-route-path" id="map-route-path" d=""/>
+                <circle class="map-start-point" cx="38" cy="230" r="6"/>
+                <text class="map-start-label" x="48" y="235">MULAI</text>
+                <text class="map-road-label" x="113" y="76" transform="rotate(10 113 76)">JL. KETINTANG</text>
+                <text class="map-road-label" x="235" y="171" transform="rotate(68 235 171)">WONOKROMO</text>
+              </svg>
+              <div id="map-markers" class="map-markers"></div>
+            </div>
+
+            <div class="map-legend" aria-label="Legenda peta">
+              <span><i class="map-legend-dot accessible" aria-hidden="true"></i>Ramah akses</span>
+              <span><i class="map-legend-dot attention" aria-hidden="true"></i>Perlu perhatian</span>
+              <span><i class="map-legend-dot start" aria-hidden="true"></i>Titik awal demo</span>
+            </div>
+          </section>
+
+          <section id="map-facility-detail" class="map-info-card rounded-3xl glass-card p-3.5 border border-white/10" aria-labelledby="map-facility-name" aria-live="polite">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h4 id="map-facility-name" class="text-sm font-extrabold text-white">Memuat fasilitas...</h4>
+                <p id="map-facility-address" class="text-[10px] text-slate-400 mt-1"></p>
+              </div>
+              <span id="map-facility-status" class="map-status-badge">Status</span>
+            </div>
+            <dl class="map-access-grid">
+              <div><dt>Kondisi trotoar</dt><dd id="map-sidewalk-condition"></dd></div>
+              <div><dt>Jalur pemandu</dt><dd id="map-tactile-condition"></dd></div>
+              <div><dt>Ramp / bidang miring</dt><dd id="map-ramp-condition"></dd></div>
+            </dl>
+            <p id="map-access-summary" class="text-[10px] text-slate-300 mt-3"></p>
+          </section>
+
+          <section class="map-route-card rounded-3xl glass-card p-3.5 border border-emerald-400/20" aria-labelledby="map-route-title" aria-live="polite">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="map-route-icon"><i data-lucide="route" aria-hidden="true"></i></span>
+                <div>
+                  <h4 id="map-route-title" class="text-xs font-extrabold text-white">Rekomendasi rute</h4>
+                  <p id="map-route-mode" class="text-[9px] text-emerald-300 mt-0.5">Pilih fasilitas pada peta</p>
+                </div>
+              </div>
+              <div class="text-right shrink-0">
+                <span id="map-route-distance" class="text-[10px] font-bold text-white block"></span>
+                <span id="map-route-duration" class="text-[9px] text-slate-400"></span>
+              </div>
+            </div>
+            <p id="map-route-summary" class="text-[10px] text-slate-300 mt-3"></p>
+            <ol id="map-route-steps" class="map-route-steps"></ol>
+            <p class="text-[9px] text-amber-200 mt-3">Rute dan kondisi adalah data contoh, bukan navigasi GPS atau verifikasi lapangan.</p>
+          </section>
+
+          <section class="space-y-2" aria-labelledby="map-facility-list-title">
+            <h4 id="map-facility-list-title" class="text-xs font-extrabold text-white">Fasilitas di area</h4>
+            <div id="map-facility-list" class="map-facility-list"></div>
+          </section>
+        </div>
+
+        <!-- =====================================================
+             TAB: AKSI MUDA / PENCAPAIAN PENGGUNA
+        ====================================================== -->
+        <div id="tab-gamification" class="tab-panel hidden space-y-4">
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-extrabold text-white">Aksi Muda</h3>
+              <p class="text-[10px] text-slate-400 mt-1">Kontribusi, tantangan, dan pencapaianmu</p>
+            </div>
+            <span class="text-[9px] font-mono px-2 py-1 rounded-full bg-amber-500/15 text-amber-200 border border-amber-400/25 shrink-0">DEMO LOKAL</span>
+          </div>
+
+          <section class="gamification-score-card rounded-3xl p-4 border border-emerald-400/25" aria-labelledby="achievement-page-title">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <h4 id="achievement-page-title" class="text-xs font-bold text-emerald-200">Detail pencapaian pengguna</h4>
+                <p id="gamification-profile-name" class="text-base font-extrabold text-white mt-1 truncate">Memuat profil...</p>
+                <p id="gamification-profile-role" class="text-[10px] text-slate-300 mt-0.5"></p>
+              </div>
+              <div class="gamification-level-icon" aria-hidden="true"><i data-lucide="trophy"></i></div>
+            </div>
+            <div class="gamification-points-row">
+              <div>
+                <span class="text-[9px] uppercase tracking-wider text-emerald-200">Total poin</span>
+                <div class="flex items-baseline gap-1">
+                  <strong id="gamification-points" class="text-3xl font-extrabold text-white">0</strong>
+                  <span class="text-[10px] text-emerald-200">poin</span>
+                </div>
+              </div>
+              <span id="gamification-level" class="gamification-level-badge">Relawan Pemula</span>
+            </div>
+            <div class="mt-3">
+              <div class="flex items-center justify-between gap-2 text-[9px] text-slate-300 mb-1">
+                <span id="gamification-level-description">Perjalanan kontribusimu dimulai di sini.</span>
+                <span id="gamification-level-progress">0%</span>
+              </div>
+              <div class="gamification-progress-track" role="progressbar" aria-label="Progres menuju level berikutnya" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                <span id="gamification-progress-bar"></span>
+              </div>
+            </div>
+            <p class="text-[9px] text-emerald-100 mt-3">+50 poin untuk setiap laporan yang dinyatakan valid.</p>
+          </section>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div class="gamification-stat-card">
+              <span class="text-[9px] text-slate-400">Laporan valid</span>
+              <strong id="gamification-valid-count" class="text-lg font-extrabold text-white">0</strong>
+              <span class="text-[9px] text-slate-400">kontribusi terverifikasi</span>
+            </div>
+            <div class="gamification-stat-card">
+              <span class="text-[9px] text-slate-400">Peringkat demo</span>
+              <strong id="gamification-rank" class="text-lg font-extrabold text-white">—</strong>
+              <span class="text-[9px] text-slate-400">di leaderboard lokal</span>
+            </div>
+          </div>
+
+          <section class="gamification-section" aria-labelledby="gamification-badges-title">
+            <div class="flex items-center justify-between gap-2">
+              <h4 id="gamification-badges-title" class="text-xs font-extrabold text-white">Badge pencapaian</h4>
+              <span id="gamification-badge-count" class="text-[9px] text-slate-400">0 terbuka</span>
+            </div>
+            <div id="gamification-badges" class="gamification-badge-grid"></div>
+          </section>
+
+          <section class="gamification-section" aria-labelledby="gamification-missions-title">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <h4 id="gamification-missions-title" class="text-xs font-extrabold text-white">Misi minggu ini</h4>
+                <p id="gamification-week-label" class="text-[9px] text-slate-400 mt-0.5"></p>
+              </div>
+              <i data-lucide="calendar-check" class="w-4 h-4 text-cyan-300" aria-hidden="true"></i>
+            </div>
+            <div id="gamification-missions" class="gamification-mission-list"></div>
+          </section>
+
+          <section class="gamification-section" aria-labelledby="gamification-leaderboard-title">
+            <div class="flex items-center justify-between gap-2">
+              <h4 id="gamification-leaderboard-title" class="text-xs font-extrabold text-white">Leaderboard relawan</h4>
+              <span class="text-[9px] text-slate-400">peringkat demo</span>
+            </div>
+            <div id="gamification-leaderboard" class="gamification-leaderboard"></div>
+          </section>
+
+          <section class="gamification-section" aria-labelledby="gamification-history-title">
+            <div class="flex items-center justify-between gap-2">
+              <h4 id="gamification-history-title" class="text-xs font-extrabold text-white">Riwayat kontribusi</h4>
+              <span class="text-[9px] text-slate-400">poin hanya untuk laporan valid</span>
+            </div>
+            <div id="gamification-history" class="gamification-history-list"></div>
+          </section>
+
+          <section id="gamification-verification-panel" class="gamification-section hidden" aria-labelledby="gamification-verify-title">
+            <div class="flex items-center justify-between gap-2">
+              <h4 id="gamification-verify-title" class="text-xs font-extrabold text-white">Validasi laporan (simulasi Bappeda)</h4>
+              <span class="text-[9px] text-amber-200">demo lokal</span>
+            </div>
+            <p class="text-[9px] text-slate-400 mt-1">Validasi hanya untuk demonstrasi. Sistem produksi perlu petugas dan backend terotorisasi.</p>
+            <div id="gamification-pending-reports" class="gamification-history-list"></div>
+          </section>
+        </div>
+
+        <!-- =====================================================
+             TAB: AI COMPUTER VISION SCANNER
+        ====================================================== -->
+        <div id="tab-scan" class="tab-panel hidden space-y-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="text-sm font-extrabold text-white">AI Computer Vision Audit</h3>
+              <p class="text-[11px] text-slate-400">Standar Permen PUPR No. 14/PRT/M/2017</p>
+            </div>
+            <span class="text-[10px] font-mono px-2 py-1 rounded-lg bg-cyan-500/15 text-cyan-300 border border-cyan-500/30">CV-Engine v2.6</span>
+          </div>
+
+          <section class="audit-report-card rounded-3xl glass-card p-3.5 border border-cyan-400/25 space-y-3" aria-labelledby="audit-report-title">
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 id="audit-report-title" class="text-sm font-extrabold text-white">Buat Laporan Kerusakan</h4>
+                <p class="text-[10px] text-slate-400 mt-0.5">Foto fasilitas publik untuk pemeriksaan awal.</p>
+              </div>
+              <span class="text-[9px] font-mono px-2 py-1 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-400/20 shrink-0">AUDIT PINTAR</span>
+            </div>
+
+            <form id="audit-report-form" onsubmit="submitAuditReport(event)" class="audit-report-form">
+              <input id="audit-camera-input" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" aria-label="Ambil foto fasilitas" onchange="handleAuditPhotoSelected(event)" />
+              <input id="audit-gallery-input" class="sr-only" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Pilih foto dari galeri" onchange="handleAuditPhotoSelected(event)" />
+
+              <div class="grid grid-cols-2 gap-2">
+                <button type="button" class="audit-photo-button" onclick="openAuditCamera()">
+                  <i data-lucide="camera" aria-hidden="true"></i>
+                  <span>Ambil Foto</span>
+                </button>
+                <button type="button" class="audit-photo-button" onclick="openAuditGallery()">
+                  <i data-lucide="image" aria-hidden="true"></i>
+                  <span>Dari Galeri</span>
+                </button>
+              </div>
+              <p class="text-[10px] text-slate-400">Format JPG, PNG, atau WebP · maksimal 10 MB.</p>
+
+              <div id="audit-photo-preview-wrap" class="audit-photo-preview-wrap hidden">
+                <img id="audit-photo-preview" class="audit-photo-preview" alt="Pratinjau foto fasilitas yang akan dilaporkan" />
+                <div class="flex items-center justify-between gap-2 pt-2">
+                  <span id="audit-photo-name" class="text-[10px] text-slate-300 truncate"></span>
+                  <button type="button" class="audit-remove-photo" onclick="removeAuditPhoto()">Hapus foto</button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 gap-2">
+                <label class="audit-field">
+                  <span>Nama fasilitas</span>
+                  <input id="audit-facility-name" class="audit-input" type="text" maxlength="80" required placeholder="Contoh: Halte Ketintang" />
+                </label>
+                <label class="audit-field">
+                  <span>Jenis fasilitas</span>
+                  <select id="audit-facility-type" class="audit-input" required>
+                    <option value="">Pilih jenis</option>
+                    <option value="Trotoar">Trotoar</option>
+                    <option value="Ramp">Ramp</option>
+                    <option value="Guiding block">Guiding block</option>
+                    <option value="Halte">Halte</option>
+                    <option value="Toilet umum">Toilet umum</option>
+                    <option value="Tempat parkir">Tempat parkir</option>
+                    <option value="Fasilitas lain">Fasilitas lain</option>
+                  </select>
+                </label>
+              </div>
+
+              <label class="audit-field">
+                <span>Deskripsi kerusakan</span>
+                <textarea id="audit-description" class="audit-input audit-description" rows="3" maxlength="500" required placeholder="Jelaskan bagian yang rusak atau membahayakan pengguna..."></textarea>
+              </label>
+
+              <div class="audit-field">
+                <label for="audit-location">Lokasi fasilitas</label>
+                <div class="audit-location-row">
+                  <input id="audit-location" class="audit-input" type="text" maxlength="160" required placeholder="Alamat atau patokan lokasi" oninput="handleAuditLocationInput()" />
+                  <button id="audit-location-button" type="button" class="audit-location-button" onclick="requestAuditLocation()" aria-label="Gunakan lokasi saat ini">
+                    <i data-lucide="locate-fixed" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <p id="audit-location-status" class="text-[10px] text-slate-400 mt-1" aria-live="polite">Isi alamat atau gunakan lokasi saat ini.</p>
+              </div>
+
+              <button id="audit-analyze-button" type="button" class="audit-analyze-button" onclick="analyzeAuditPhoto()">
+                <i data-lucide="scan-line" aria-hidden="true"></i>
+                <span>Analisis Foto</span>
+              </button>
+
+              <div class="audit-status-row">
+                <span>Status laporan</span>
+                <strong id="audit-report-status" aria-live="polite">Belum dianalisis</strong>
+              </div>
+
+              <div id="audit-analysis-result" class="audit-analysis-result hidden" role="status" aria-live="polite">
+                <div class="flex items-center justify-between gap-2">
+                  <span class="text-xs font-bold text-white">Tingkat indikasi (demo)</span>
+                  <span id="audit-severity-badge" class="audit-severity-badge">Belum ada hasil</span>
+                </div>
+                <p id="audit-analysis-summary" class="text-[11px] text-slate-300 mt-2"></p>
+                <div class="audit-score-track" aria-hidden="true"><span id="audit-score-bar"></span></div>
+                <p id="audit-score-label" class="text-[10px] text-slate-400 mt-1"></p>
+                <p class="text-[9px] text-amber-200 mt-2">Analisis ini demo lokal berbasis tekstur foto, bukan model AI terlatih. Verifikasi kondisi di lapangan tetap diperlukan.</p>
+              </div>
+
+              <button id="audit-submit-button" type="submit" class="audit-submit-button" disabled>
+                <i data-lucide="send" aria-hidden="true"></i>
+                <span>Simpan Laporan</span>
+              </button>
+              <button id="audit-new-report-button" type="button" class="audit-new-report-button hidden" onclick="resetAuditReportForm()">Buat laporan baru</button>
+              <p class="text-[9px] text-slate-400 text-center">Foto dan lokasi hanya disimpan di browser perangkat ini, tidak dikirim ke server.</p>
+            </form>
+
+            <section class="audit-history" aria-labelledby="audit-history-title">
+              <div class="flex items-center justify-between gap-2">
+                <h5 id="audit-history-title" class="text-xs font-bold text-white">Laporan tersimpan</h5>
+                <span class="text-[9px] text-slate-400">di perangkat ini</span>
+              </div>
+              <div id="audit-report-list" class="audit-report-list">
+                <p class="text-[10px] text-slate-400">Belum ada laporan tersimpan.</p>
+              </div>
+            </section>
+          </section>
+
+          <!-- Scenario Selector Pills -->
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar">
+            <button onclick="setScanScenario(0)" id="scen-0" class="scen-btn active px-3 py-1.5 rounded-full text-[11px] font-bold bg-emerald-400 text-slate-950 shrink-0">
+              1. Ramp Terjal
+            </button>
+            <button onclick="setScanScenario(1)" id="scen-1" class="scen-btn px-3 py-1.5 rounded-full text-[11px] font-bold glass-card text-slate-300 shrink-0">
+              2. Guiding Block Rusak
+            </button>
+            <button onclick="setScanScenario(2)" id="scen-2" class="scen-btn px-3 py-1.5 rounded-full text-[11px] font-bold glass-card text-slate-300 shrink-0">
+              3. Trotoar Terhalang
+            </button>
+          </div>
+
+          <!-- Simulated AR Camera Viewfinder -->
+          <div class="audit-viewfinder relative h-56 rounded-3xl bg-slate-950 border-2 border-cyan-400/40 overflow-hidden flex flex-col justify-between p-3.5">
+            <!-- Animated Laser Scan Line -->
+            <div id="scan-laser" class="absolute inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_15px_#34d399] top-1/3 animate-bounce"></div>
+
+            <!-- Top HUD -->
+            <div class="flex items-center justify-between text-[10px] font-mono z-10">
+              <span class="px-2 py-0.5 rounded bg-black/70 text-emerald-400 border border-emerald-500/30">● GPS: -7.3114, 112.7289</span>
+              <span id="cv-confidence" class="px-2 py-0.5 rounded bg-black/70 text-cyan-300">Skor simulasi: 98,4%</span>
+            </div>
+
+            <!-- Center AR Bounding Box -->
+            <div class="my-auto mx-auto w-56 p-3 rounded-2xl border-2 border-dashed border-rose-400 bg-rose-500/10 backdrop-blur-xs text-center z-10">
+              <span id="cv-violation-tag" class="text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded bg-rose-500 text-white">PELANGGARAN TERDETEKSI</span>
+              <p id="cv-measurement" class="text-base font-extrabold text-white mt-1.5">Kemiringan Ramp: 14.2°</p>
+              <p id="cv-standard" class="text-[10px] text-rose-200">Batas Maksimal PUPR: ≤ 7.0° (Defisit +102%)</p>
+            </div>
+
+            <!-- Bottom Trigger -->
+            <button onclick="triggerAutoMusrenbang()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-cyan-400 text-slate-950 font-extrabold text-xs shadow-lg flex items-center justify-center gap-1.5 z-10 active:scale-95 transition">
+              <i data-lucide="send" class="w-3.5 h-3.5"></i>
+              <span>Kunci Skor ADS & Kirim ke E-Musrenbang</span>
+            </button>
+          </div>
+
+          <!-- Generated Ticket Result Card -->
+          <div id="emus-ticket-card" class="rounded-2xl glass-card p-3.5 border border-emerald-400/40 bg-emerald-500/5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono font-bold text-emerald-300">TIKET RESMI BAPPEDA TERBIT</span>
+              <span id="ticket-id" class="text-xs font-mono font-extrabold text-white">#EMUS-2026-8841</span>
+            </div>
+            <p id="ticket-desc" class="text-[11px] text-slate-300 mt-1">
+              Skor ADS <strong class="text-rose-400">92/100 (Prioritas Tinggi)</strong> otomatis masuk antrean penguncian anggaran APBD Dinas PUPR.
+            </p>
+          </div>
+        </div>
+
+        <!-- =====================================================
+             TAB 3: INKLUSI+ (FITUR KHUSUS PENYANDANG DISABILITAS)
+        ====================================================== -->
+        <div id="tab-inklusi" class="tab-panel hidden space-y-4">
+          <div class="rounded-3xl p-4 bg-gradient-to-br from-cyan-950 via-indigo-950 to-slate-900 border border-cyan-400/35">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-cyan-300">Asisten Mobilitas & Verifikator</span>
+                <h3 class="text-base font-extrabold text-white mt-0.5">Ruang Inklusi+ Disabilitas</h3>
+              </div>
+              <div class="w-10 h-10 rounded-2xl bg-cyan-400/20 text-cyan-300 flex items-center justify-center">
+                <i data-lucide="accessibility" class="w-5 h-5"></i>
+              </div>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-1.5 leading-relaxed">
+              Navigasi real-time bebas hambatan, pemandu audio-haptik tunanetra, serta hak audit independen hasil perbaikan PUPR.
+            </p>
+          </div>
+
+          <!-- Assistive Quick Toggles -->
+          <div class="grid grid-cols-2 gap-2.5">
+            <button onclick="triggerHapticGuide()" class="p-3.5 rounded-2xl glass-card border border-cyan-400/30 text-left hover:bg-cyan-500/10 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <i data-lucide="volume-2" class="w-5 h-5 text-cyan-300"></i>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/20 text-cyan-300">AKTIF</span>
+              </div>
+              <span class="text-xs font-bold text-white block">Pemandu Suara & Getar</span>
+              <span class="text-[10px] text-slate-400">Peringatan guiding block</span>
+            </button>
+
+            <button onclick="triggerEmergencySOS()" class="p-3.5 rounded-2xl glass-card border border-rose-500/40 bg-rose-500/10 text-left hover:bg-rose-500/20 transition">
+              <div class="flex items-center justify-between mb-1.5">
+                <i data-lucide="shield-alert" class="w-5 h-5 text-rose-400"></i>
+                <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500 text-white font-bold">SOS</span>
+              </div>
+              <span class="text-xs font-bold text-white block">Panggil Relawan Patrol</span>
+              <span class="text-[10px] text-rose-200">Bantuan pendampingan 3 mnt</span>
+            </button>
+          </div>
+
+          <!-- Barrier-Free Safe Route Card -->
+          <div class="rounded-2xl glass-card p-3.5 border border-white/10 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <h4 class="text-xs font-extrabold text-white flex items-center gap-1.5">
+                <i data-lucide="route" class="w-4 h-4 text-emerald-400"></i>
+                Rute Aman Kursi Roda & Tunanetra
+              </h4>
+              <span class="text-[10px] font-mono text-emerald-300">98% Aksesibel</span>
+            </div>
+            <div class="p-2.5 rounded-xl bg-slate-900/90 border border-emerald-500/25 text-[11px]">
+              <div class="flex items-center justify-between text-white font-semibold">
+                <span>Stasiun Wonokromo → Kampus UNESA</span>
+                <span class="text-emerald-400 font-mono">1.4 km</span>
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">
+                ✓ Ramp landai terverifikasi (5.2°) • ✓ Guiding block utuh • ✕ Menghindari galian Jl. Ketintang
+              </p>
+            </div>
+          </div>
+
+          <!-- Independent Disability Auditor Verification -->
+          <div class="rounded-2xl glass-card p-3.5 border border-indigo-400/30 space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono font-bold text-indigo-300 uppercase">Auditor Independen Disabilitas</span>
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300">Menunggu Uji Coba</span>
+            </div>
+            <p class="text-xs font-bold text-white">Perbaikan Ramp JPO Darmo (#EMUS-8790)</p>
+            <p class="text-[10px] text-slate-400">Dinas PUPR melaporkan pengerjaan selesai. Konfirmasi kelayakan fisik di lapangan:</p>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button onclick="verifyRepair(true)" class="py-2 rounded-xl bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold hover:bg-emerald-500/30">
+                ✓ Layak & Sesuai
+              </button>
+              <button onclick="verifyRepair(false)" class="py-2 rounded-xl bg-rose-500/20 border border-rose-400/40 text-rose-300 text-xs font-bold hover:bg-rose-500/30">
+                ✕ Tolak / Revisi
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- =====================================================
+             TAB 4: TATA KELOLA (BUDGET LOCK APBD & YOUTH REWARD)
+        ====================================================== -->
+        <div id="tab-gov" class="tab-panel hidden space-y-4">
+          <div>
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h3 class="text-sm font-extrabold text-white">Dashboard Pemerintah</h3>
+                <p class="text-[10px] text-slate-400 mt-1">Pemantauan laporan dan tindak lanjut fasilitas publik</p>
+              </div>
+              <span class="text-[9px] font-mono px-2 py-1 rounded-full bg-amber-500/15 text-amber-200 border border-amber-400/25 shrink-0">DEMO LOKAL</span>
+            </div>
+          </div>
+
+          <section aria-label="Statistik laporan pemerintah">
+            <div class="gov-stat-grid">
+              <article class="gov-stat-card">
+                <span>Total laporan masuk</span>
+                <strong id="gov-total-reports">0</strong>
+                <small>laporan masyarakat</small>
+              </article>
+              <article class="gov-stat-card">
+                <span>Fasilitas dilaporkan rusak</span>
+                <strong id="gov-damaged-facilities">0</strong>
+                <small>lokasi berbeda</small>
+              </article>
+              <article class="gov-stat-card waiting">
+                <span>Menunggu</span>
+                <strong id="gov-waiting-count">0</strong>
+                <small>perlu ditindaklanjuti</small>
+              </article>
+              <article class="gov-stat-card in-progress">
+                <span>Diproses</span>
+                <strong id="gov-processing-count">0</strong>
+                <small>sedang ditangani</small>
+              </article>
+              <article class="gov-stat-card completed">
+                <span>Selesai</span>
+                <strong id="gov-completed-count">0</strong>
+                <small>menunggu evaluasi</small>
+              </article>
+            </div>
+          </section>
+
+          <section class="gov-panel gov-map-panel" aria-labelledby="gov-map-title">
+            <div class="flex items-start justify-between gap-2 mb-3">
+              <div>
+                <h4 id="gov-map-title" class="text-xs font-extrabold text-white">Peta persebaran kerusakan</h4>
+                <p class="text-[9px] text-slate-400 mt-1">Skema area Ketintang–Wonokromo · bukan peta navigasi</p>
+              </div>
+              <span id="gov-critical-summary" class="gov-priority-chip critical">Prioritas tinggi: 0</span>
+            </div>
+            <div id="policy-map" class="policy-map" role="region" aria-label="Peta skematis laporan kerusakan. Pilih penanda untuk membuka detail laporan.">
+              <svg class="policy-map-art" viewBox="0 0 360 190" preserveAspectRatio="none" aria-hidden="true">
+                <g class="policy-map-parks">
+                  <path d="M92 22h19v32H92zM188 21h32v29h-32zM82 89h30v30H82zM210 91h40v29h-40zM108 148h17v24h-17zM202 149h26v23h-26z"/>
+                  <circle cx="97" cy="29" r="4"/>
+                  <circle cx="105" cy="37" r="4"/>
+                  <circle cx="97" cy="47" r="4"/>
+                  <circle cx="196" cy="28" r="4"/>
+                  <circle cx="208" cy="35" r="4"/>
+                  <circle cx="197" cy="44" r="4"/>
+                  <circle cx="88" cy="96" r="4"/>
+                  <circle cx="101" cy="103" r="4"/>
+                  <circle cx="91" cy="112" r="4"/>
+                  <circle cx="219" cy="98" r="4"/>
+                  <circle cx="235" cy="105" r="4"/>
+                  <circle cx="220" cy="113" r="4"/>
+                </g>
+                <path class="policy-map-block" d="M14 18h74v42H14zM116 16h66v49h-66zM226 15h116v44H226zM18 82h58v44H18zM120 88h82v40h-82zM260 86h82v49h-82zM22 145h85v32H22zM132 145h66v32h-66zM232 148h108v29H232z"/>
+                <g class="policy-map-buildings">
+                  <rect x="57" y="24" width="23" height="12" rx="1"/>
+                  <rect x="57" y="42" width="23" height="12" rx="1"/>
+                  <rect x="123" y="22" width="22" height="13" rx="1"/>
+                  <rect x="151" y="22" width="22" height="13" rx="1"/>
+                  <rect x="230" y="20" width="34" height="13" rx="1"/>
+                  <rect x="270" y="20" width="31" height="13" rx="1"/>
+                  <rect x="304" y="20" width="31" height="13" rx="1"/>
+                  <rect x="123" y="96" width="31" height="13" rx="1"/>
+                  <rect x="163" y="96" width="31" height="13" rx="1"/>
+                  <rect x="26" y="91" width="18" height="13" rx="1"/>
+                  <rect x="49" y="91" width="18" height="13" rx="1"/>
+                  <rect x="266" y="92" width="30" height="13" rx="1"/>
+                  <rect x="304" y="92" width="31" height="13" rx="1"/>
+                  <rect x="28" y="151" width="30" height="12" rx="1"/>
+                  <rect x="66" y="151" width="34" height="12" rx="1"/>
+                  <rect x="136" y="151" width="24" height="12" rx="1"/>
+                  <rect x="168" y="151" width="24" height="12" rx="1"/>
+                  <rect x="237" y="153" width="38" height="12" rx="1"/>
+                </g>
+                <g class="policy-map-road-edges">
+                  <path d="M-10 146C63 125 116 144 172 112S272 66 370 58"/>
+                  <path d="M93 -10C104 47 127 95 158 130S189 167 195 200"/>
+                  <path d="M242 -10C248 41 256 84 273 120S297 161 305 200"/>
+                </g>
+                <path class="policy-map-road main" d="M-10 146C63 125 116 144 172 112S272 66 370 58"/>
+                <path class="policy-map-road" d="M93 -10C104 47 127 95 158 130S189 167 195 200"/>
+                <path class="policy-map-road" d="M242 -10C248 41 256 84 273 120S297 161 305 200"/>
+                <g class="policy-map-place-labels">
+                  <rect x="101" y="65" width="68" height="16" rx="8"/>
+                  <text class="policy-map-label" x="107" y="76">KETINTANG</text>
+                  <rect x="250" y="139" width="87" height="16" rx="8"/>
+                  <text class="policy-map-label" x="256" y="150">WONOKROMO</text>
+                </g>
+              </svg>
+              <div id="gov-map-markers" class="policy-map-markers"></div>
+            </div>
+            <div class="gov-map-legend">
+              <span><i class="critical"></i>Kritis</span>
+              <span><i class="high"></i>Tinggi</span>
+              <span><i class="medium"></i>Sedang</span>
+              <span><i class="low"></i>Perlu asesmen</span>
+            </div>
+            <p id="gov-map-note" class="text-[9px] text-slate-400 mt-2"></p>
+          </section>
+
+          <section class="gov-panel space-y-3" aria-labelledby="gov-report-list-title">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <h4 id="gov-report-list-title" class="text-xs font-extrabold text-white">Daftar laporan masyarakat</h4>
+                <p class="text-[9px] text-slate-400 mt-1">Pilih laporan untuk membuka detail dan tindak lanjut.</p>
+              </div>
+              <span id="gov-filter-count" class="text-[9px] text-cyan-300 font-bold">0 laporan</span>
+            </div>
+            <div class="gov-filter-row" role="group" aria-label="Filter status laporan">
+              <button type="button" class="gov-filter-btn active" data-gov-filter="all" onclick="filterGovernmentReports('all')" aria-pressed="true">Semua</button>
+              <button type="button" class="gov-filter-btn" data-gov-filter="Menunggu" onclick="filterGovernmentReports('Menunggu')" aria-pressed="false">Menunggu</button>
+              <button type="button" class="gov-filter-btn" data-gov-filter="Diproses" onclick="filterGovernmentReports('Diproses')" aria-pressed="false">Diproses</button>
+              <button type="button" class="gov-filter-btn" data-gov-filter="Selesai" onclick="filterGovernmentReports('Selesai')" aria-pressed="false">Selesai</button>
+            </div>
+            <div id="gov-report-list" class="gov-report-list"></div>
+          </section>
+
+          <section class="gov-panel" aria-labelledby="gov-report-detail-title" aria-live="polite">
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0">
+                <span id="gov-report-id" class="text-[9px] font-mono text-cyan-300"></span>
+                <h4 id="gov-report-detail-title" class="text-sm font-extrabold text-white mt-1">Pilih laporan</h4>
+                <p id="gov-report-location" class="text-[9px] text-slate-400 mt-1"></p>
+              </div>
+              <span id="gov-report-priority" class="gov-priority-chip">Prioritas</span>
+            </div>
+            <div class="gov-detail-status-row">
+              <span>Status tindak lanjut</span>
+              <strong id="gov-report-status" class="gov-status-badge">Menunggu</strong>
+            </div>
+            <p id="gov-report-description" class="text-[10px] text-slate-300 mt-3"></p>
+            <p id="gov-report-meta" class="text-[9px] text-slate-400 mt-2"></p>
+            <div id="gov-report-photo-wrap" class="hidden mt-3">
+              <img id="gov-report-photo" class="gov-report-photo" alt="Foto pada laporan masyarakat" />
+            </div>
+            <div id="gov-status-controls" class="gov-status-controls hidden">
+              <label for="gov-follow-up-select">Perbarui tindak lanjut (demo)</label>
+              <div class="flex gap-2">
+                <select id="gov-follow-up-select" class="gov-follow-up-select">
+                  <option value="Menunggu">Menunggu</option>
+                  <option value="Diproses">Diproses</option>
+                  <option value="Selesai">Selesai</option>
+                </select>
+                <button type="button" class="gov-save-status-button" onclick="saveGovernmentReportStatus()">Simpan</button>
+              </div>
+            </div>
+          </section>
+
+          <section class="gov-panel" aria-labelledby="gov-policy-summary-title">
+            <div class="flex items-center justify-between gap-2">
+              <h4 id="gov-policy-summary-title" class="text-xs font-extrabold text-white">Rekap untuk evaluasi kebijakan</h4>
+              <i data-lucide="clipboard-check" class="w-4 h-4 text-emerald-300" aria-hidden="true"></i>
+            </div>
+            <ul id="gov-policy-summary" class="gov-policy-summary"></ul>
+            <p class="text-[9px] text-amber-200 mt-2">Klasifikasi prioritas adalah penyaringan awal demo, bukan keputusan teknis atau inspeksi resmi.</p>
+          </section>
+
+          <!-- Budget Lock Action Card -->
+          <div class="rounded-3xl glass-card p-4 border border-indigo-400/35 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-bold">#EMUS-2026-8841</span>
+              <span class="text-xs font-mono font-extrabold text-rose-400">ADS Score: 92</span>
+            </div>
+            <div>
+              <h4 class="text-xs font-extrabold text-white">Rekonstruksi Ramp & Guiding Block Ketintang</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">Estimasi Pagu Wajib APBD: <strong class="text-white">Rp 185.000.000</strong></p>
+            </div>
+
+            <button id="btn-budget-lock" onclick="toggleBudgetLock()" class="w-full py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-extrabold text-xs shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-1.5 transition">
+              <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+              <span>Kunci alokasi APBD (simulasi)</span>
+            </button>
+          </div>
+
+          <!-- Youth Gamification & Civic Credits -->
+          <div class="rounded-3xl glass-card p-4 border border-emerald-400/25 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-[10px] font-mono text-emerald-300 uppercase">Mesin Gamifikasi Aksi Muda</span>
+                <h4 id="gov-gamification-name" class="text-xs font-extrabold text-white">Kontribusi Patroli Inklusi Anda</h4>
+              </div>
+              <span id="gov-gamification-points" class="text-sm font-mono font-extrabold text-emerald-400">0 poin</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-2 text-center">
+              <div class="p-2 rounded-xl bg-slate-900/90 border border-white/5">
+                <span id="gov-audit-valid-count" class="text-sm font-extrabold text-white block">0</span>
+                <span class="text-[9px] text-slate-400">Audit tervalidasi</span>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-900/90 border border-white/5">
+                <span class="text-sm font-extrabold text-cyan-300 block">9</span>
+                <span class="text-[9px] text-slate-400">Target APBD</span>
+              </div>
+              <div class="p-2 rounded-xl bg-slate-900/90 border border-white/5">
+                <span class="text-sm font-extrabold text-amber-300 block">SKPI</span>
+                <span class="text-[9px] text-slate-400">Sertifikat</span>
+              </div>
+            </div>
+            <button type="button" onclick="switchTab('gamification')" class="w-full py-2 rounded-xl border border-emerald-400/25 bg-emerald-500/10 text-emerald-200 text-[10px] font-bold">
+              Lihat detail pencapaian
+            </button>
+          </div>
+        </div>
+
+        <div id="tab-profile" class="tab-panel hidden space-y-4">
+          <section class="rounded-3xl glass-card p-4 border border-emerald-400/25 bg-gradient-to-br from-emerald-950/60 via-slate-900 to-cyan-950/60">
+            <div class="flex items-center gap-3">
+              <span id="profile-tab-avatar" class="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-emerald-400 to-cyan-500 flex items-center justify-center text-slate-950 font-extrabold shadow">YP</span>
+              <div class="min-w-0">
+                <h3 id="profile-tab-name" class="text-sm font-extrabold text-white truncate">Pengguna AKSESTAMA</h3>
+                <p id="profile-tab-role" class="text-[10px] text-emerald-300 mt-1">Patroli Pemuda</p>
+                <p id="profile-tab-email" class="text-[9px] text-slate-400 mt-1 truncate">Profil demo lokal</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mt-4">
+              <div class="rounded-xl bg-slate-950/40 border border-white/10 p-3">
+                <span id="profile-tab-report-count" class="block text-lg font-extrabold text-white">0</span>
+                <span class="text-[9px] text-slate-400">Laporan tersimpan</span>
+              </div>
+              <div class="rounded-xl bg-slate-950/40 border border-white/10 p-3">
+                <span id="profile-tab-points" class="block text-lg font-extrabold text-cyan-300">0</span>
+                <span id="profile-tab-valid-count" class="text-[9px] text-slate-400">0 laporan valid</span>
+              </div>
+            </div>
+            <p class="text-[9px] text-slate-400 mt-3">Data profil dan kontribusi tersimpan lokal di browser ini.</p>
+          </section>
+
+          <section class="rounded-3xl glass-card p-4 border border-white/10 space-y-3">
+            <div>
+              <h3 class="text-xs font-extrabold text-white">Profil dan akun</h3>
+              <p class="text-[10px] text-slate-400 mt-1">Kelola informasi, aktivitas, dan preferensi akun.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="openAccountCenter('profile')" class="rounded-xl glass-card border border-white/10 p-3 text-left hover:bg-emerald-500/10">
+                <i data-lucide="user-round" class="w-4 h-4 text-emerald-300"></i>
+                <span class="block text-[10px] font-bold text-white mt-2">Edit profil</span>
+              </button>
+              <button type="button" onclick="openAccountCenter('notifications')" class="rounded-xl glass-card border border-white/10 p-3 text-left hover:bg-cyan-500/10">
+                <i data-lucide="bell" class="w-4 h-4 text-cyan-300"></i>
+                <span class="block text-[10px] font-bold text-white mt-2">Notifikasi</span>
+              </button>
+              <button type="button" onclick="openAccountCenter('reports')" class="rounded-xl glass-card border border-white/10 p-3 text-left hover:bg-cyan-500/10">
+                <i data-lucide="clipboard-list" class="w-4 h-4 text-cyan-300"></i>
+                <span class="block text-[10px] font-bold text-white mt-2">Riwayat laporan</span>
+              </button>
+              <button type="button" onclick="openAccountCenter('settings')" class="rounded-xl glass-card border border-white/10 p-3 text-left hover:bg-amber-500/10">
+                <i data-lucide="settings-2" class="w-4 h-4 text-amber-300"></i>
+                <span class="block text-[10px] font-bold text-white mt-2">Pengaturan akun</span>
+              </button>
+              <button type="button" onclick="openAccountCenter('help')" class="rounded-xl glass-card border border-white/10 p-3 text-left hover:bg-indigo-500/10">
+                <i data-lucide="circle-help" class="w-4 h-4 text-indigo-300"></i>
+                <span class="block text-[10px] font-bold text-white mt-2">Pusat bantuan</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="rounded-3xl glass-card p-4 border border-cyan-400/20 space-y-3">
+            <div>
+              <h3 class="text-xs font-extrabold text-white">Layanan lainnya</h3>
+              <p class="text-[10px] text-slate-400 mt-1">Menu tambahan tetap tersedia melalui halaman Profil.</p>
+            </div>
+            <button type="button" onclick="switchTab('inklusi')" class="w-full flex items-center gap-3 rounded-xl border border-cyan-400/20 bg-cyan-500/5 p-3 text-left">
+              <i data-lucide="accessibility" class="w-4 h-4 text-cyan-300"></i>
+              <span class="flex-1 text-[10px] font-bold text-white">Fitur Inklusi+</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </button>
+            <button type="button" onclick="switchTab('gov')" class="w-full flex items-center gap-3 rounded-xl border border-amber-400/20 bg-amber-500/5 p-3 text-left">
+              <i data-lucide="landmark" class="w-4 h-4 text-amber-300"></i>
+              <span class="flex-1 text-[10px] font-bold text-white">Dashboard Pemerintah · APBD</span>
+              <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+            </button>
+          </section>
+        </div>
+
+      </div>
+
+      <div id="account-center" class="account-center hidden" aria-hidden="true">
+        <section class="account-center-panel" role="dialog" aria-modal="true" aria-labelledby="account-center-title">
+          <header class="account-center-header">
+            <div>
+              <p>AKSESTAMA · AKUN LOKAL</p>
+              <h2 id="account-center-title">Pusat Akun</h2>
+            </div>
+            <button id="account-center-close" type="button" class="account-close-button" onclick="closeAccountCenter()" aria-label="Tutup pusat akun">
+              <i data-lucide="x" aria-hidden="true"></i>
+            </button>
+          </header>
+
+          <nav class="account-section-nav" role="tablist" aria-label="Bagian pusat akun">
+            <button id="account-tab-profile" type="button" role="tab" aria-controls="account-section-profile" data-account-section-tab="profile" aria-selected="true" onclick="switchAccountSection('profile')">Profil</button>
+            <button id="account-tab-notifications" type="button" role="tab" aria-controls="account-section-notifications" data-account-section-tab="notifications" aria-selected="false" onclick="switchAccountSection('notifications')">Notifikasi</button>
+            <button id="account-tab-reports" type="button" role="tab" aria-controls="account-section-reports" data-account-section-tab="reports" aria-selected="false" onclick="switchAccountSection('reports')">Riwayat</button>
+            <button id="account-tab-settings" type="button" role="tab" aria-controls="account-section-settings" data-account-section-tab="settings" aria-selected="false" onclick="switchAccountSection('settings')">Pengaturan</button>
+            <button id="account-tab-help" type="button" role="tab" aria-controls="account-section-help" data-account-section-tab="help" aria-selected="false" onclick="switchAccountSection('help')">Bantuan</button>
+          </nav>
+
+          <div class="account-center-body">
+            <section id="account-section-profile" class="account-section" role="tabpanel" aria-labelledby="account-tab-profile" tabindex="0">
+              <div class="account-profile-summary">
+                <span id="account-profile-role-avatar" aria-hidden="true"><i data-lucide="user-round"></i></span>
+                <div>
+                  <h3 id="account-profile-role">Patroli Pemuda</h3>
+                  <p id="account-profile-note">Profil disimpan lokal di browser ini.</p>
+                </div>
+              </div>
+              <form id="account-profile-form" class="account-form" onsubmit="saveAccountProfile(event)">
+                <label>Nama tampilan
+                  <input id="account-profile-name" type="text" maxlength="80" autocomplete="name" required />
+                </label>
+                <label>Email
+                  <input id="account-profile-email" type="email" maxlength="120" autocomplete="email" />
+                </label>
+                <p class="account-readonly-note">Email akun terdaftar tidak dapat diubah dari prototipe ini.</p>
+                <button type="submit" class="account-primary-button">Simpan profil</button>
+              </form>
+            </section>
+
+            <section id="account-section-notifications" class="account-section hidden" role="tabpanel" aria-labelledby="account-tab-notifications" tabindex="0">
+              <div class="account-section-heading">
+                <div>
+                  <h3>Notifikasi</h3>
+                  <p>Pembaruan laporan dan aktivitas lokal.</p>
+                </div>
+                <button id="account-mark-notifications-read" type="button" class="account-inline-action hidden" onclick="markAccountNotificationsRead()">Tandai dibaca</button>
+              </div>
+              <div id="account-notifications-list" class="account-list"></div>
+              <p class="account-local-note">Notifikasi dibuat dari data demo dan laporan yang tersimpan di browser ini.</p>
+            </section>
+
+            <section id="account-section-reports" class="account-section hidden" role="tabpanel" aria-labelledby="account-tab-reports" tabindex="0">
+              <div class="account-section-heading">
+                <div>
+                  <h3>Riwayat laporan</h3>
+                  <p>Status laporan Audit Pintar akun ini.</p>
+                </div>
+              </div>
+              <div id="account-report-history-list" class="account-list"></div>
+            </section>
+
+            <section id="account-section-settings" class="account-section hidden" role="tabpanel" aria-labelledby="account-tab-settings" tabindex="0">
+              <div class="account-section-heading">
+                <div>
+                  <h3>Pengaturan akun</h3>
+                  <p>Preferensi tampilan, aksesibilitas, dan notifikasi.</p>
+                </div>
+              </div>
+              <form id="account-settings-form" class="account-form" onsubmit="saveAccountSettings(event)">
+                <label>Tema aplikasi
+                  <select id="account-setting-theme">
+                    <option value="dark">Gelap</option>
+                    <option value="light">Terang</option>
+                  </select>
+                </label>
+                <label class="account-check-row">
+                  <input id="account-setting-contrast" type="checkbox" />
+                  <span><strong>Kontras tinggi</strong><small>Memperjelas perbedaan teks dan latar.</small></span>
+                </label>
+                <label class="account-check-row">
+                  <input id="account-setting-voice" type="checkbox" />
+                  <span><strong>Bantuan suara</strong><small>Mengaktifkan preferensi perintah suara demo.</small></span>
+                </label>
+                <label class="account-check-row">
+                  <input id="account-setting-reports" type="checkbox" />
+                  <span><strong>Pembaruan laporan</strong><small>Notifikasi status laporan Audit Pintar.</small></span>
+                </label>
+                <label class="account-check-row">
+                  <input id="account-setting-missions" type="checkbox" />
+                  <span><strong>Aktivitas Aksi Muda</strong><small>Notifikasi misi dan pencapaian.</small></span>
+                </label>
+                <button type="submit" class="account-primary-button">Simpan pengaturan</button>
+              </form>
+              <button type="button" class="account-logout-button" onclick="logoutToLogin()">Keluar dari akun</button>
+            </section>
+
+            <section id="account-section-help" class="account-section hidden" role="tabpanel" aria-labelledby="account-tab-help" tabindex="0">
+              <div class="account-section-heading">
+                <div>
+                  <h3>Pusat bantuan</h3>
+                  <p>Panduan singkat menggunakan prototipe AKSESTAMA.</p>
+                </div>
+              </div>
+              <div class="account-faq-list">
+                <details>
+                  <summary>Bagaimana cara mengirim laporan?</summary>
+                  <p>Buka tab AI Audit, ambil foto atau pilih dari galeri, lengkapi data fasilitas dan lokasi, lalu jalankan analisis demo sebelum menyimpan.</p>
+                </details>
+                <details>
+                  <summary>Apakah hasil analisis AI sudah tervalidasi?</summary>
+                  <p>Belum. Analisis foto saat ini hanya demonstrasi lokal dan bukan model AI terlatih. Periksa kondisi langsung sebelum mengambil keputusan.</p>
+                </details>
+                <details>
+                  <summary>Kapan laporan mendapat poin?</summary>
+                  <p>Poin hanya muncul setelah laporan disimulasikan valid oleh peran Bappeda pada prototipe. Ini bukan validasi pemerintah yang resmi.</p>
+                </details>
+                <details>
+                  <summary>Siapa yang dapat melihat data saya?</summary>
+                  <p>Data fitur ini disimpan di penyimpanan browser perangkat dan tidak dikirim ke server. Pengguna perangkat yang sama dapat mengubah atau menghapusnya.</p>
+                </details>
+              </div>
+              <div class="account-help-contact">
+                <h4>Butuh bantuan lebih lanjut?</h4>
+                <p>Untuk prototipe lomba ini, gunakan panduan dan data demo yang tersedia. Kanal dukungan langsung belum terhubung.</p>
+                <button type="button" class="account-inline-action" onclick="showToast('Kanal dukungan langsung belum tersedia pada prototipe lokal.')">Lihat informasi bantuan</button>
+              </div>
+            </section>
+          </div>
+        </section>
+      </div>
+
+      <!-- =========================================================
+       BOTTOM MOBILE NAVIGATION BAR (5 TABS)
+      ========================================================== -->
+      <nav aria-label="Navigasi Utama" class="dashboard-bottom-nav absolute bottom-0 inset-x-0 px-4 pb-4 pt-2 z-30">
+        <div class="dashboard-bottom-nav-inner grid grid-cols-5 gap-1">
+          <button type="button" onclick="switchTab('home')" id="nav-home" aria-current="page" class="nav-btn active py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-emerald-300 bg-emerald-500/15 transition">
+            <i data-lucide="compass" class="w-4 h-4" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold">Beranda</span>
+          </button>
+          <button type="button" onclick="switchTab('map')" id="nav-map" class="nav-btn py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition">
+            <i data-lucide="map" class="w-4 h-4" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold">Peta</span>
+          </button>
+          <button type="button" onclick="switchTab('scan')" id="nav-scan" class="nav-btn py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition">
+            <i data-lucide="scan" class="w-4 h-4" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold">Lapor</span>
+          </button>
+          <button type="button" onclick="switchTab('gamification')" id="nav-gamification" class="nav-btn py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition">
+            <i data-lucide="trophy" class="w-4 h-4" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold">Aksi Muda</span>
+          </button>
+          <button type="button" onclick="switchTab('profile')" id="nav-profile" class="nav-btn py-2 rounded-xl flex flex-col items-center justify-center gap-0.5 text-slate-400 hover:text-white transition">
+            <i data-lucide="user-round" class="w-4 h-4" aria-hidden="true"></i>
+            <span class="text-[10px] font-bold">Profil</span>
+          </button>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Floating Toast Notification -->
+    <div id="toast" class="pointer-events-none opacity-0 translate-y-3 transition-all duration-300 absolute top-16 inset-x-5 z-50 px-3.5 py-2.5 rounded-2xl bg-slate-900/95 border border-emerald-400/50 text-xs font-semibold text-white shadow-2xl flex items-center gap-2">
+      <i data-lucide="sparkles" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+      <span id="toast-msg">Notifikasi sistem</span>
+    </div>
+
+  </main>
+
+  <!-- Application Logic -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
