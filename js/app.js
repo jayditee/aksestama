@@ -553,6 +553,12 @@ function loginToApp() {
   showToast(`Selamat datang, ${profile.name}`);
 }
 
+function loginAsBappedaDemo() {
+  appState.selectedRole = 'bappeda';
+  appState.currentAccount = null;
+  loginToApp();
+}
+
 function togglePasswordVisibility() {
   const passwordInput = document.getElementById('login-password');
   const toggleButton = document.getElementById('toggle-login-password');
